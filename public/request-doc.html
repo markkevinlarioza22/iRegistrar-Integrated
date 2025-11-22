@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Request - iRegistrar</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    form { max-width: 500px; margin: auto; display: flex; flex-direction: column; gap: 10px; }
+    input, select, textarea, button { padding: 10px; font-size: 16px; }
+    .message { text-align: center; margin-top: 20px; font-weight: bold; }
+    .return-btn { margin-bottom: 20px; padding: 8px 14px; border: none; border-radius: 4px; cursor: pointer; background: #0a4fa3; color: white; }
+    .return-btn:hover { background: #0d5ec9; }
+  </style>
+</head>
+<body>
+  <button class="return-btn" onclick="history.back()">⬅ Return</button>
+  <h2>Submit a Document Request</h2>
+
+  <form id="requestForm">
+    <label>Document Type</label>
+    <select id="documentType" required>
+      <option value="">Select Document</option>
+      <option value="Transcript of Records">Transcript of Records</option>
+      <option value="Certificate of Enrollment">Certificate of Enrollment</option>
+      <option value="Good Moral Certificate">Good Moral Certificate</option>
+    </select>
+
+    <label>Purpose</label>
+    <input type="text" id="purpose" placeholder="Enter purpose" required />
+
+    <label>Remarks (optional)</label>
+    <textarea id="remarks" rows="3" placeholder="Any additional notes..."></textarea>
+
+    <button type="submit">Submit Request</button>
+  </form>
+
+  <div class="message" id="message"></div>
+
+  <script>
+    document.getElementById('requestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const token = localStorage.getItem('token'); 
+      const messageDiv = document.getElementById('message');
+
+      if (!token) {
+        messageDiv.textContent = '❌ You are not logged in. Please log in first.';
+        messageDiv.style.color = 'red';
+        return;
+      }
+
+      const documentType = document.getElementById('documentType').value;
+      const purpose = document.getElementById('purpose').value;
+      const remarks = document.getElementById('remarks').value;
+
+      try {
+        const res = await fetch('/api/requests', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          },
+          body: JSON.stringify({ documentType, purpose, remarks })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          messageDiv.textContent = '✅ Request submitted successfully!';
+          messageDiv.style.color = 'green';
+          document.getElementById('requestForm').reset();
+        } else {
+          messageDiv.textContent = `❌ ${data.message || 'Failed to submit request.'}`;
+          messageDiv.style.color = 'red';
+        }
+      } catch (err) {
+        console.error('Request error:', err);
+        messageDiv.textContent = '⚠️ Server error while submitting request.';
+        messageDiv.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>

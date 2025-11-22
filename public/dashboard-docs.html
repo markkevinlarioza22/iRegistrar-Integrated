@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard - iRegistrar</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #003b8b;
+      color: white;
+    }
+
+    .return-btn {
+      background: #003b8b;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .return-btn:hover {
+      background: #0050b5;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .Pending { color: #b57f00; }
+    .Approved { color: green; }
+    .Rejected { color: red; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <button class="return-btn" onclick="history.back()">⬅ Return</button>
+
+      <h1>Student Dashboard</h1>
+      <p id="welcomeMsg">Welcome, User!</p>
+      <p id="roleInfo">Role: student</p>
+
+      <div class="actions">
+        <a href="request-doc.html" class="btn-outline">Request Document</a>
+        <button id="logoutBtn" class="btn-outline">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <h2>Your Document Requests</h2>
+
+      <table id="requestTable">
+        <thead>
+          <tr>
+            <th>Document</th>
+            <th>Purpose</th>
+            <th>Status</th>
+            <th>Date Requested</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
