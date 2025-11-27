@@ -27,6 +27,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Export the model
-const User = mongoose.model('User', userSchema);
+// Export the model and explicitly use 'users' collection
+const User = mongoose.model('User', userSchema, 'users'); // <-- third param is collection
 module.exports = User;

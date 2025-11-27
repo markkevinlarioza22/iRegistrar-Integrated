@@ -1,13 +1,18 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const connectDB = require('./db/index'); // DB connection
+
+// Import routes
 const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 
 const app = express();
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(cors());
@@ -17,11 +22,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
 
 // Default route
 app.get('/', (req, res) => {

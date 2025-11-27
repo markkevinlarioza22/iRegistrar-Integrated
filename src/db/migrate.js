@@ -1,68 +1,56 @@
 require('dotenv').config();
-const db = require('./index');
+const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const createTablesSQL = `
-CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    full_name TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('student', 'admin'))
-);
+const mongoURI = process.env.MONGO_URI;
 
-CREATE TABLE IF NOT EXISTS student_profiles (
-    user_id TEXT PRIMARY KEY,
-    student_id TEXT UNIQUE NOT NULL,
-    course TEXT,
-    contact_number TEXT,
-    school_year TEXT,
-    specialization TEXT,
-    section TEXT,
-    is_profile_complete BOOLEAN NOT NULL DEFAULT 0,
-    profile_image_url TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS document_requests (
-    id TEXT PRIMARY KEY,
-    student_user_id TEXT NOT NULL,
-    document_type TEXT NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('Pending', 'Processing', 'Ready for Pickup', 'Completed')),
-    request_date TEXT NOT NULL,
-    release_date TEXT,
-    FOREIGN KEY (student_user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS clearance_statuses (
-    student_user_id TEXT NOT NULL,
-    instructor_id TEXT NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('Pending', 'Cleared')),
-    PRIMARY KEY (student_user_id, instructor_id),
-    FOREIGN KEY (student_user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS notifications (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    type TEXT NOT NULL,
-    message TEXT NOT NULL,
-    link TEXT,
-    read BOOLEAN NOT NULL DEFAULT 0,
-    timestamp TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-`;
-
-function migrate() {
+async function migrate() {
   try {
-    db.exec(createTablesSQL);
-    console.log('✅ Database migration complete: Tables created or already exist.');
-  } catch (error) {
-    console.error('❌ Database migration failed:', error.message);
-    process.exit(1);
+    await mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('✅ Connected to MongoDB for migration');
+
+    const db = mongoose.connection.db;
+
+    // Ensure collections exist
+    const collections = await db.listCollections().toArray();
+    const collectionNames = collections.map(c => c.name);
+
+    if (!collectionNames.includes('users')) {
+      await db.createCollection('users');
+      await db.collection('users').createIndex({ email: 1 }, { unique: true });
+      console.log('✅ Users collection created with unique email index');
+    }
+
+    if (!collectionNames.includes('student_profiles')) {
+      await db.createCollection('student_profiles');
+      await db.collection('student_profiles').createIndex({ student_id: 1 }, { unique: true });
+      console.log('✅ Student_profiles collection created with unique student_id index');
+    }
+
+    if (!collectionNames.includes('document_requests')) {
+      await db.createCollection('document_requests');
+      await db.collection('document_requests').createIndex({ id: 1 }, { unique: true });
+      console.log('✅ Document_requests collection created with unique id index');
+    }
+
+    if (!collectionNames.includes('clearance_statuses')) {
+      await db.createCollection('clearance_statuses');
+      await db.collection('clearance_statuses').createIndex({ student_user_id: 1, instructor_id: 1 }, { unique: true });
+      console.log('✅ Clearance_statuses collection created with compound unique index');
+    }
+
+    if (!collectionNames.includes('notifications')) {
+      await db.createCollection('notifications');
+      await db.collection('notifications').createIndex({ id: 1 }, { unique: true });
+      console.log('✅ Notifications collection created with unique id index');
+    }
+
+    console.log('🎉 MongoDB migration complete!');
+  } catch (err) {
+    console.error('❌ Migration failed:', err.message);
   } finally {
-    db.close();
-    console.log('🔒 Database connection closed after migration.');
+    await mongoose.disconnect();
+    console.log('🔒 MongoDB connection closed after migration');
   }
 }
 

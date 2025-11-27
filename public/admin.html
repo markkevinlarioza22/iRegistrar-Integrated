@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iRegistrar Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body { margin:0; font-family: Arial,sans-serif; background:#f3f7fc; display:flex; }
+    .sidebar { width:230px; background:#003b8b; color:white; height:100vh; padding:20px 0; position:fixed; display:flex; flex-direction:column; }
+    .sidebar h2 { text-align:center; margin-bottom:30px; font-size:22px; }
+    .sidebar a { display:block; padding:12px 20px; color:white; text-decoration:none; font-size:15px; margin-bottom:4px; }
+    .sidebar a:hover, .sidebar a.active { background:#0050b5; }
+    .main { margin-left:230px; padding:20px; width:calc(100% - 230px); }
+    h1,h2 { margin-top:0; }
+    table { width:100%; border-collapse:collapse; background:white; border-radius:6px; overflow:hidden; margin-bottom:20px; }
+    th, td { padding:12px; border-bottom:1px solid #ddd; font-size:15px; text-align:left; }
+    th { background:#0050b5; color:white; }
+    .return-btn { background:#003b8b; color:white; padding:8px 14px; border:none; cursor:pointer; border-radius:4px; margin-bottom:15px; }
+    canvas { background:white; border-radius:6px; padding:10px; margin-bottom:20px; }
+    .status { font-weight:bold; padding:4px 8px; border-radius:4px; }
+    .Pending { color:#b57f00; } .Approved { color:green; } .Rejected { color:red; } .Processing { color:blue; } .Released { color:#009999; }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2 id="sidebarTitle">Dashboard</h2>
+    <a href="#" class="active" data-section="requests">📄 Requests</a>
+    <a href="#" data-section="users" id="usersLink">👥 Users</a>
+    <a href="#" data-section="analytics" id="analyticsLink">📊 Analytics</a>
+    <a href="#" data-section="settings">⚙️ Settings</a>
+    <hr style="border:1px solid #1a58ad;">
+    <a href="#" id="logoutBtn">🚪 Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Requests Section -->
+    <div id="requests" class="section">
+      <h1>Document Requests</h1>
+      <table id="requestsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Document</th>
+            <th>Purpose</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="7">Loading...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Users Section -->
+    <div id="users" class="section" style="display:none;">
+      <h1>Users</h1>
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">Loading...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Analytics Section -->
+    <div id="analytics" class="section" style="display:none;">
+      <h1>Analytics</h1>
+      <div style="display:flex; flex-wrap:wrap; gap:30px;">
+        <div style="flex:1; min-width:300px;"><canvas id="userChart"></canvas></div>
+        <div style="flex:1; min-width:300px;"><canvas id="requestChart"></canvas></div>
+      </div>
+      <h2>Recent Requests</h2>
+      <table id="recentRequestsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Document</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="5">Loading...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Settings Section -->
+    <div id="settings" class="section" style="display:none;">
+      <h1>Settings</h1>
+      <p>Settings options coming soon...</p>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="js/admin.js"></script>
+  <script>
+    // Sidebar navigation
+    document.querySelectorAll('.sidebar a[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.getAttribute('data-section');
+        document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+        document.getElementById(section).style.display = 'block';
+        document.querySelectorAll('.sidebar a[data-section]').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+
+        // Load appropriate data
+        if(section === 'requests') loadRequests();
+        if(section === 'users') loadUsers();
+        if(section === 'analytics') loadAnalytics();
+      });
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+      window.location.href = '/login.html';
+    });
+
+    // Show/Hide sections based on role
+    const role = localStorage.getItem('role');
+    if(role !== 'admin'){
+      document.getElementById('usersLink').style.display = 'none';
+      document.getElementById('analyticsLink').style.display = 'none';
+      document.querySelector('#requestsTable thead tr th:nth-child(1)').style.display = 'none'; // hide name column
+      document.querySelector('#requestsTable tbody tr td:nth-child(1)').style.display = 'none';
+    } else {
+      document.getElementById('sidebarTitle').textContent = 'Admin Panel';
+    }
+
+    // Initial load
+    loadRequests();
+  </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+// src/routes/requestRoutes.js
 const express = require('express');
 const router = express.Router();
 
@@ -11,26 +12,16 @@ const {
 const auth = require('../middleware/auth');
 const adminOnly = require('../middleware/admin');
 
-// ------------------------------
-// STUDENT ROUTES
-// ------------------------------
-
-// Student creates a new document request
+// Student creates a request
 router.post('/', auth, createRequest);
 
-// Student gets his/her own requests
-router.get('/', auth, getUserRequests);
+// Student gets own requests
+router.get('/my', auth, getUserRequests);
 
+// Admin: get all requests
+router.get('/', auth, adminOnly, getAllRequests);
 
-// ------------------------------
-// ADMIN ROUTES
-// ------------------------------
-
-// Admin / Registrar: Get ALL requests
-router.get('/all', auth, adminOnly, getAllRequests);
-
-// Admin / Registrar: Update status of any request
-router.put('/:id', auth, adminOnly, updateRequestStatus);
-
+// Admin: update status
+router.put('/:id/status', auth, adminOnly, updateRequestStatus);
 
 module.exports = router;

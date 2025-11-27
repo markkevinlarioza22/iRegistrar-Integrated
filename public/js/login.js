@@ -1,36 +1,46 @@
 // public/js/login.js
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('loginForm');
+// ================================
+// Login page script
+// ================================
+const API_URL = API_BASE_URL;
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+  const email = (document.getElementById("email")?.value || "").trim();
+  const password = (document.getElementById("password")?.value || "").trim();
 
-    try {
-      const res = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`${API_URL}/users/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
 
-      if (res.ok && data.token) {
-        // ✅ Save token
-        localStorage.setItem('token', data.token);
+    const data = await res.json();
 
-        alert('Login successful!');
-
-        // ✅ Redirect to dashboard page
-        window.location.href = '/dashboard-docs.html';
-      } else {
-        alert(data.message || 'Invalid login credentials.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Server error during login.');
+    if (!res.ok) {
+      alert(data.message || "Login failed");
+      return;
     }
-  });
+
+    // Store token and role
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.user.role);
+
+    // Redirect based on role
+    if (data.user.role === "admin") {
+      window.location.href = "/admin.html";
+    } else {
+      window.location.href = "/dashboard-docs.html";
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Server error. Please try again later.");
+  }
 });
