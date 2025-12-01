@@ -1,84 +1,82 @@
 // public/js/app.js
 // ================================
-// Common app script for student dashboard
+// Student Dashboard Script
 // ================================
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
+
+// Ensure config loaded
 const API_URL = API_BASE_URL;
 
-// Redirect to login if no token
+const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+
+// Redirect if not logged in
 if (!token) window.location.href = "/login.html";
 
-// Load user info for welcome message
-async function loadUserInfo() {
-  const welcomeMsg = document.getElementById("welcomeMsg");
-  const roleInfo = document.getElementById("roleInfo");
-
-  try {
-    const res = await fetch(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-      if (welcomeMsg) welcomeMsg.textContent = `Welcome, ${data.name}!`;
-      if (roleInfo) roleInfo.textContent = `Role: ${data.role}`;
-    } else {
-      console.warn("Failed to load user info");
+// Fetch wrapper
+function authFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {})
     }
-  } catch (err) {
-    console.error("Auth load error:", err);
-  }
+  });
 }
 
-loadUserInfo();
+// Load student info
+function loadStudentInfo() {
+  const name = localStorage.getItem("name") || "Student";
+  document.getElementById("welcomeMsg").textContent = `Welcome, ${name}!`;
+  document.getElementById("roleInfo").textContent = `Role: ${role}`;
+}
 
-// Logout button handler
-document.getElementById("logoutBtn")?.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  window.location.href = "/login.html";
-});
-
-// Load student requests (student dashboard)
+// Load student requests
 async function loadStudentRequests() {
-  const tableBody = document.querySelector("#requestTable tbody");
-  if (!tableBody) return;
+  const tbody = document.querySelector("#requestTable tbody");
+  if (!tbody) return;
 
-  tableBody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
 
   try {
-    const res = await fetch(`${API_URL}/requests/my`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await authFetch(`${API_URL}/requests/my`);
     const data = await res.json();
 
-    tableBody.innerHTML = "";
-
     if (!res.ok) {
-      tableBody.innerHTML = `<tr><td colspan="4">${data.message || "Failed to load requests."}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4">${data.message || "Error"}</td></tr>`;
       return;
     }
 
     if (!data.length) {
-      tableBody.innerHTML = `<tr><td colspan="4">No requests found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4">No requests yet.</td></tr>`;
       return;
     }
 
+    tbody.innerHTML = "";
     data.forEach(req => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
         <td>${req.documentType}</td>
         <td>${req.purpose}</td>
         <td><span class="status ${req.status}">${req.status}</span></td>
         <td>${new Date(req.createdAt).toLocaleDateString()}</td>
       `;
-      tableBody.appendChild(row);
+      tbody.appendChild(tr);
     });
+
   } catch (err) {
-    console.error("Error loading student requests:", err);
-    tableBody.innerHTML = `<tr><td colspan="4">Server error loading requests.</td></tr>`;
+    console.error("Error loading student requests", err);
+    tbody.innerHTML = `<tr><td colspan="4">Server error.</td></tr>`;
   }
 }
 
-loadStudentRequests();
+// Logout
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  localStorage.clear();
+  window.location.href = "/login.html";
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadStudentInfo();
+  loadStudentRequests();
+});
