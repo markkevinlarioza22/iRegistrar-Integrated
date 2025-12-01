@@ -3,29 +3,41 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const connectDB = require('./db/index'); // DB connection
+const connectDB = require('./db/index');
 
-// Import routes
 const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 
 const app = express();
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
+// CORS fix
+app.use(cors({
+  origin: [
+    "http://localhost:5500",
+    "http://localhost:3000",
+    "http://127.0.0.1:5500",
+    "https://iregistrar-integrated.onrender.com",
+  ],
+  credentials: true,
+}));
 
-// Routes
+app.use(express.json());
+
+// Serve frontend
+const publicPath = path.join(__dirname, '..', 'public');
+console.log("Serving static from:", publicPath);
+app.use(express.static(publicPath));
+
+// Backend API
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 
-// Default route
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/login.html'));
+// SAFE catch-all route for Render + Node 22
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(publicPath, 'login.html'));
 });
 
 module.exports = app;
