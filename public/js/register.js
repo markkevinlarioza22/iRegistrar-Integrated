@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const name = document.getElementById("name")?.value.trim();
-        const email = document.getElementById("email")?.value.trim();
-        const password = document.getElementById("password")?.value.trim();
+        const name = (document.getElementById("name")?.value || "").trim();
+        const email = (document.getElementById("email")?.value || "").trim();
+        const password = (document.getElementById("password")?.value || "").trim();
 
         if (!name || !email || !password) return alert("All fields are required.");
         if (!isValidEmail(email)) return alert("Please enter a valid email.");
@@ -23,19 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`${API_URL}/users/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({ name, email, password }),
             });
 
-            const data = await res.json();
-            if (res.ok) {
-                alert("Registration successful! You can now log in.");
-                window.location.href = "/login.html";
-            } else {
-                alert(data.message || "Registration failed.");
+            if (!res.ok) {
+                const text = await res.text(); // fallback for HTML
+                console.error("Registration failed:", text);
+                alert("Registration failed. Check server or credentials.");
+                return;
             }
+
+            const data = await res.json();
+            alert("Registration successful! You can now log in.");
+            window.location.href = "/login.html";
         } catch (err) {
-            console.error("Registration error:", err);
-            alert("Server error during registration.");
+            console.error("Network error during registration:", err);
+            alert("Network error. Check your connection or backend server.");
         }
     });
 });

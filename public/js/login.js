@@ -12,19 +12,21 @@ document.getElementById("loginForm")?.addEventListener("submit", async (event) =
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
         });
-        const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Login failed");
+            const text = await res.text(); // fallback for HTML response
+            console.error("Login failed response:", text);
+            alert("Login failed. Check credentials or server.");
             return;
         }
 
+        const data = await res.json();
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.user.role);
 
         window.location.href = data.user.role === "admin" ? "/admin.html" : "/dashboard-docs.html";
     } catch (err) {
-        console.error("Login error:", err);
-        alert("Network error. Check connection.");
+        console.error("Network error:", err);
+        alert("Network error. Check your connection or backend server.");
     }
 });

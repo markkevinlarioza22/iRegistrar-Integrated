@@ -16,10 +16,19 @@
             const res = await fetch(`${API_BASE_URL}/requests`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (!res.ok) return tableBody.innerHTML = '<tr><td colspan="4">Failed to load requests.</td></tr>';
+
+            if (!res.ok) {
+                const text = await res.text();
+                console.error("Failed to load requests:", text);
+                tableBody.innerHTML = '<tr><td colspan="4">Failed to load requests.</td></tr>';
+                return;
+            }
 
             const data = await res.json();
-            if (!Array.isArray(data) || !data.length) return tableBody.innerHTML = '<tr><td colspan="4">No requests found.</td></tr>';
+            if (!Array.isArray(data) || !data.length) {
+                tableBody.innerHTML = '<tr><td colspan="4">No requests found.</td></tr>';
+                return;
+            }
 
             tableBody.innerHTML = '';
             data.forEach(r => {
@@ -51,12 +60,13 @@
             const res = await fetch(`${API_BASE_URL}/requests`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ documentType, purpose })
+                body: JSON.stringify({ documentType, purpose }),
             });
 
             if (!res.ok) {
-                const body = await res.json().catch(()=>({message:'Request failed'}));
-                return showMessage('Failed to submit request: ' + (body.message || res.statusText));
+                const text = await res.text();
+                console.error('Submit request failed:', text);
+                return showMessage('Failed to submit request.');
             }
 
             await res.json();
@@ -71,8 +81,7 @@
 
     await loadMyRequests();
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    logoutBtn?.addEventListener('click', () => {
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
         localStorage.removeItem('token');
         window.location.href = '/login.html';
     });

@@ -1,13 +1,19 @@
 const token = localStorage.getItem("token");
 
-// Fetch all document requests for admin
 async function loadRequests() {
     try {
-        const response = await fetch(`${API_BASE_URL}/requests/all`, {
+        const res = await fetch(`${API_BASE_URL}/requests/all`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
-        const data = await response.json();
+        if (!res.ok) {
+            const text = await res.text();
+            console.error("Failed to load admin requests:", text);
+            document.getElementById("requestsBody").innerHTML = '<tr><td colspan="6">Failed to load requests.</td></tr>';
+            return;
+        }
+
+        const data = await res.json();
         const tbody = document.getElementById("requestsBody");
         tbody.innerHTML = "";
 
@@ -33,15 +39,14 @@ async function loadRequests() {
             `;
             tbody.appendChild(tr);
         });
-    } catch (error) {
-        console.error("Error loading requests:", error);
+    } catch (err) {
+        console.error("Error loading requests:", err);
     }
 }
 
-// Update request status
 async function updateStatus(id, status) {
     try {
-        const response = await fetch(`${API_BASE_URL}/requests/status/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/requests/status/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -49,11 +54,17 @@ async function updateStatus(id, status) {
             },
             body: JSON.stringify({ status })
         });
-        const result = await response.json();
-        console.log("Status updated:", result);
-        loadRequests(); // Refresh table after update
-    } catch (error) {
-        console.error("Error updating status:", error);
+
+        if (!res.ok) {
+            const text = await res.text();
+            console.error("Failed to update status:", text);
+            return;
+        }
+
+        await res.json();
+        loadRequests();
+    } catch (err) {
+        console.error("Error updating status:", err);
     }
 }
 
