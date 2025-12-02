@@ -1,8 +1,5 @@
-// public/js/request-doc.js
 (async () => {
   const token = localStorage.getItem('token');
-
-  // If not logged in, redirect to login
   if (!token) {
     alert('Please login first.');
     window.location.href = '/login.html';
@@ -12,15 +9,13 @@
   const form = document.getElementById('requestForm');
   const tableBody = document.querySelector('#myRequestsTable tbody');
 
-  // Helper to show simple messages (could be upgraded to UI alerts)
   function showMessage(msg) {
     alert(msg);
   }
 
-  // Load student's own requests and render table
   async function loadMyRequests() {
     try {
-      const res = await fetch('/api/requests', {
+      const res = await fetch(`${API_BASE_URL}/requests`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) {
@@ -35,11 +30,8 @@
 
       tableBody.innerHTML = '';
       data.forEach(r => {
-        const tr = document.createElement('tr');
-
-        // Map status to class names used by your CSS in dashboard-docs.html
         const statusClass = (r.status || 'Pending').replace(/\s+/g, '');
-
+        const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${r.documentType || '—'}</td>
           <td>${r.purpose || '—'}</td>
@@ -48,14 +40,12 @@
         `;
         tableBody.appendChild(tr);
       });
-
     } catch (err) {
       console.error('Error loading student requests:', err);
       tableBody.innerHTML = '<tr><td colspan="4">Error loading requests.</td></tr>';
     }
   }
 
-  // Submit handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const documentType = document.getElementById('documentType').value;
@@ -71,12 +61,9 @@
     }
 
     try {
-      const res = await fetch('/api/requests', {
+      const res = await fetch(`${API_BASE_URL}/requests`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ documentType, purpose })
       });
 
@@ -97,10 +84,8 @@
     }
   });
 
-  // Initial load
   await loadMyRequests();
 
-  // Logout button on this page if exists
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {

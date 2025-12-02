@@ -1,6 +1,3 @@
-// public/js/login.js
-
-// Use correct API for Local/Render
 const API_URL = API_BASE_URL;
 
 document.getElementById("loginForm")?.addEventListener("submit", async (event) => {
@@ -23,15 +20,13 @@ document.getElementById("loginForm")?.addEventListener("submit", async (event) =
       return;
     }
 
-    // save
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.user.role);
 
-    // redirect
     if (data.user.role === "admin") {
       window.location.href = "admin.html";
     } else {
-      window.location.href = "dashboard-docs.html"; // ✅ FIXED
+      window.location.href = "dashboard-docs.html";
     }
 
   } catch (err) {

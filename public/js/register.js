@@ -1,7 +1,3 @@
-// public/js/register.js
-// ================================
-// Registration page script
-// ================================
 const API_URL = API_BASE_URL;
 
 function isValidEmail(email) {

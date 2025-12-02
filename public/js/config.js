@@ -1,6 +1,8 @@
-// public/js/config.js
 // Automatically switch between local and deployed backend
-const API_BASE_URL =
+const BASE_URL =
   window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://iregistrar-integrated.onrender.com/api";
+    ? "http://localhost:5000"
+    : "https://iregistrar-integrated.onrender.com";
+
+// Ensure the API URL always has a single slash
+const API_BASE_URL = `${BASE_URL.replace(/\/+$/, "")}/api`;

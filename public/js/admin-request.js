@@ -3,10 +3,8 @@ const token = localStorage.getItem("token");
 // FETCH ALL REQUESTS FOR ADMIN
 async function loadRequests() {
     try {
-        const response = await fetch('/api/requests/all', {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+        const response = await fetch(`${API_BASE_URL}/requests/all`, {
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
         const data = await response.json();
@@ -20,8 +18,7 @@ async function loadRequests() {
 
         data.forEach(req => {
             const tr = document.createElement("tr");
-
-            const statusClass = req.status.replace(" ", "");
+            const statusClass = req.status.replace(/\s+/g, "");
 
             tr.innerHTML = `
                 <td>${req.studentName || "Unknown"}</td>
@@ -35,7 +32,6 @@ async function loadRequests() {
                     <button class="reject-btn" onclick="updateStatus('${req._id}', 'Rejected')">Reject</button>
                 </td>
             `;
-
             tbody.appendChild(tr);
         });
 
@@ -44,11 +40,10 @@ async function loadRequests() {
     }
 }
 
-
 // UPDATE STATUS
 async function updateStatus(id, status) {
     try {
-        const response = await fetch(`/api/requests/status/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/requests/status/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -61,7 +56,6 @@ async function updateStatus(id, status) {
         console.log("Status updated:", result);
 
         loadRequests(); // Refresh table
-
     } catch (error) {
         console.error("Error updating status:", error);
     }

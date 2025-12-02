@@ -1,23 +1,18 @@
-// public/js/app.js
 (async () => {
   const token = localStorage.getItem('token');
-
-  // If no token, redirect to login
   if (!token) {
     window.location.href = '/login.html';
     return;
   }
 
-  // Elements
   const welcomeMsg = document.getElementById('welcomeMsg');
   const roleInfo = document.getElementById('roleInfo');
   const requestTableBody = document.querySelector('#requestTable tbody');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Basic user info retrieval (optional). If you have /api/users/me, use it.
   async function fetchMe() {
     try {
-      const res = await fetch('/api/users/me', {
+      const res = await fetch(`${API_BASE_URL}/users/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) return;
@@ -29,10 +24,9 @@
     }
   }
 
-  // Load student's requests (same as request-doc list)
   async function loadRequests() {
     try {
-      const res = await fetch('/api/requests', {
+      const res = await fetch(`${API_BASE_URL}/requests`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) {
@@ -47,8 +41,8 @@
 
       requestTableBody.innerHTML = '';
       data.forEach(r => {
-        const tr = document.createElement('tr');
         const statusClass = (r.status || 'Pending').replace(/\s+/g, '');
+        const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${r.documentType || '—'}</td>
           <td>${r.purpose || '—'}</td>
@@ -64,7 +58,6 @@
     }
   }
 
-  // Logout
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('token');
@@ -72,7 +65,6 @@
     });
   }
 
-  // Initialize
   await fetchMe();
   await loadRequests();
 })();

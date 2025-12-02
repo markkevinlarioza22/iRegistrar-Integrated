@@ -8,7 +8,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 document.getElementById("btnAddStudent").addEventListener("click", () => {
     window.location.href = "/register.html";
 });
-document.getElementById("goRegister").addEventListener("click", () => {
+document.getElementById("goRegister")?.addEventListener("click", () => {
     window.location.href = "/register.html";
 });
 
@@ -16,7 +16,7 @@ document.getElementById("goRegister").addEventListener("click", () => {
 document.getElementById("btnViewRequests").addEventListener("click", () => {
     window.location.href = "/admin-requests.html";
 });
-document.getElementById("goRequests").addEventListener("click", () => {
+document.getElementById("goRequests")?.addEventListener("click", () => {
     window.location.href = "/admin-requests.html";
 });
 
@@ -24,6 +24,6 @@ document.getElementById("goRequests").addEventListener("click", () => {
 document.getElementById("btnAnalytics").addEventListener("click", () => {
     window.location.href = "/admin-analytics.html";
 });
-document.getElementById("goAnalytics").addEventListener("click", () => {
+document.getElementById("goAnalytics")?.addEventListener("click", () => {
     window.location.href = "/admin-analytics.html";
 });
