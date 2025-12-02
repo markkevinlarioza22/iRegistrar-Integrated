@@ -1,17 +1,26 @@
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
 
-document.getElementById('registerStudentBtn').addEventListener('click', () => {
-    window.location.href = '/register.html';
-});
+<header>
+    <h1>iRegistrar — Admin Dashboard</h1>
+    <button id="logoutBtn">Logout</button>
+</header>
 
-document.getElementById('viewRequestsBtn').addEventListener('click', async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/requests', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    console.log(data); // replace with dynamic render later
-});
+<main>
+    <div class="dashboard-container">
+        <button id="btnAddStudent">Register Student</button>
+        <button id="btnViewRequests">View Document Requests</button>
+        <button id="btnAnalytics">Analytics</button>
+    </div>
+</main>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

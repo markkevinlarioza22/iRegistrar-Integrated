@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Document Requests</title>
+    <link rel="stylesheet" href="/css/admin-requests.css" />
+</head>
+<body>
+
+<header>
+    <h1>Document Requests</h1>
+    <button onclick="window.location.href='/admin.html'">Back</button>
+</header>
+
+<main>
+    <table id="requestsTable">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Document</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="requestsBody"></tbody>
+    </table>
+</main>
+
+<script src="/js/admin-requests.js"></script>
+</body>
+</html>
