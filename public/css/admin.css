@@ -1,150 +1,37 @@
-/* ============================
-   GLOBAL STYLE
-============================ */
 body {
-  font-family: "Poppins", sans-serif;
-  background: #f4f8ff;
-  margin: 0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-h2.section-title {
-  margin-top: 0;
-  color: #003b8b;
-  font-weight: 700;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 20px;
 }
 
-/* ============================
-   LAYOUT
-============================ */
-.dashboard-container {
-  display: flex;
-  height: 100vh;
+header h1 {
+    margin: 0;
 }
 
-/* SIDEBAR */
-.sidebar {
-  width: 240px;
-  background: #003b8b;
-  color: white;
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: 100vh;
+header button {
+    padding: 5px 15px;
+    cursor: pointer;
 }
 
-.sidebar a {
-  padding: 15px 20px;
-  color: #cfe1ff;
-  text-decoration: none;
-  display: block;
-  font-size: 16px;
+main {
+    padding: 20px;
 }
 
-.sidebar a.active,
-.sidebar a:hover {
-  background: #0050b5;
-  color: white;
+#dashboard {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
-
-/* CONTENT AREA */
-.content {
-  margin-left: 240px;
-  padding: 25px;
-  width: calc(100% - 240px);
-}
-
-/* ============================
-   TABLES
-============================ */
-.table-wrapper {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  overflow-x: auto;
-  margin-top: 15px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table thead {
-  background: #003b8b;
-  color: white;
-}
-
-table th, table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  font-size: 14px;
-}
-
-table tr:hover {
-  background: #eef5ff;
-}
-
-/* ============================
-   ANALYTICS
-============================ */
-.analytics-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  margin-top: 20px;
-}
-
-.chart-box {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-}
-
-.chart-box h3 {
-  margin-bottom: 10px;
-  color: #0050b5;
-  font-weight: 600;
-  font-size: 18px;
-}
-
-/* ============================
-   MOBILE RESPONSIVE
-============================ */
-@media (max-width: 900px) {
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    flex-direction: row;
-    overflow-x: scroll;
-  }
-
-  .content {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .sidebar a {
-    font-size: 14px;
-    white-space: nowrap;
-    padding: 10px 15px;
-  }
-}
-
-@media (max-width: 600px) {
-  table th, table td {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .chart-box {
-    padding: 15px;
-  }
+#dashboard button {
+    padding: 10px 20px;
+    cursor: pointer;
 }

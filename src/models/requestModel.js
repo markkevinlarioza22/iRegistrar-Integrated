@@ -1,43 +1,10 @@
 const mongoose = require('mongoose');
 
-const DOCUMENT_TYPES = [
-  'Transcript of Records',
-  'Certificate of Enrollment',
-  'Good Moral Certificate'
-];
-
-const STATUS_TYPES = [
-  'Pending',
-  'Approved',
-  'Processing',
-  'Released',
-  'Rejected'
-];
-
 const requestSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  documentType: {
-    type: String,
-    required: true,
-    enum: DOCUMENT_TYPES
-  },
-  purpose: {
-    type: String,
-    required: true
-  },
-  remarks: {
-    type: String
-  },
-  status: {
-    type: String,
-    default: 'Pending',
-    enum: STATUS_TYPES
-  }
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    type: { type: String, required: true },
+    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    description: { type: String }
 }, { timestamps: true });
 
-const Request = mongoose.model('Request', requestSchema);
-module.exports = Request;
+module.exports = mongoose.model('Request', requestSchema);

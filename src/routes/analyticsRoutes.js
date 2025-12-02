@@ -1,10 +1,8 @@
-// src/routes/analyticsRoutes.js
 const express = require('express');
 const router = express.Router();
-const { getAnalytics } = require('../controllers/analyticsController');
 const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
+const { getRequestStats } = require('../controllers/analyticsController');
 
-router.get('/', auth, admin, getAnalytics);
+router.get('/requests', auth, getRequestStats);
 
 module.exports = router;

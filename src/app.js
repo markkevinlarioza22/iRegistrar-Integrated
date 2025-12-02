@@ -1,43 +1,34 @@
 const express = require('express');
-const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+dotenv.config();
 
-const connectDB = require('./db/index');
-
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
-// Connect DB
-connectDB();
-
-// CORS fix
-app.use(cors({
-  origin: [
-    "http://localhost:5500",
-    "http://localhost:3000",
-    "http://127.0.0.1:5500",
-    "https://iregistrar-integrated.onrender.com",
-  ],
-  credentials: true,
-}));
-
-app.use(express.json());
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve frontend
-const publicPath = path.join(__dirname, '..', 'public');
-console.log("Serving static from:", publicPath);
-app.use(express.static(publicPath));
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Backend API
+// API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
-// SAFE catch-all route for Render + Node 22
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(publicPath, 'login.html'));
+// Catch-all route for frontend HTML
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 module.exports = app;
