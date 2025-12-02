@@ -1,6 +1,6 @@
 const token = localStorage.getItem("token");
 
-// FETCH ALL REQUESTS FOR ADMIN
+// Fetch all document requests for admin
 async function loadRequests() {
     try {
         const response = await fetch(`${API_BASE_URL}/requests/all`, {
@@ -17,9 +17,8 @@ async function loadRequests() {
         }
 
         data.forEach(req => {
-            const tr = document.createElement("tr");
             const statusClass = req.status.replace(/\s+/g, "");
-
+            const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${req.studentName || "Unknown"}</td>
                 <td>${req.documentType}</td>
@@ -34,13 +33,12 @@ async function loadRequests() {
             `;
             tbody.appendChild(tr);
         });
-
     } catch (error) {
         console.error("Error loading requests:", error);
     }
 }
 
-// UPDATE STATUS
+// Update request status
 async function updateStatus(id, status) {
     try {
         const response = await fetch(`${API_BASE_URL}/requests/status/${id}`, {
@@ -51,15 +49,13 @@ async function updateStatus(id, status) {
             },
             body: JSON.stringify({ status })
         });
-
         const result = await response.json();
         console.log("Status updated:", result);
-
-        loadRequests(); // Refresh table
+        loadRequests(); // Refresh table after update
     } catch (error) {
         console.error("Error updating status:", error);
     }
 }
 
-// INITIAL LOAD
+// Initial load
 loadRequests();
