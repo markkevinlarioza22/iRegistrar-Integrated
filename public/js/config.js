@@ -5,4 +5,7 @@ const BASE_URL =
     : "https://iregistrar-integrated.onrender.com";
 
 // Ensure the API URL always has a single slash
-const API_BASE_URL = `${BASE_URL.replace(/\/+$/, "")}/api`;
+// public/js/config.js
+// API base URL for Render deployment
+const API_BASE_URL = "https://iregistrar-integrated.onrender.com/api";
+
