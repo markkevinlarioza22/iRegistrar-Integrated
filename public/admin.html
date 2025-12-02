@@ -8,19 +8,43 @@
 </head>
 <body>
 
-<header>
-    <h1>iRegistrar — Admin Dashboard</h1>
-    <button id="logoutBtn">Logout</button>
-</header>
+<div class="sidebar">
+    <h2>iRegistrar</h2>
+    <ul>
+        <li id="navDashboard">Dashboard</li>
+        <li id="btnAddStudent">Register Student</li>
+        <li id="btnViewRequests">Document Requests</li>
+        <li id="btnAnalytics">Analytics</li>
+        <li id="logoutBtn" class="logout">Logout</li>
+    </ul>
+</div>
 
-<main>
-    <div class="dashboard-container">
-        <button id="btnAddStudent">Register Student</button>
-        <button id="btnViewRequests">View Document Requests</button>
-        <button id="btnAnalytics">Analytics</button>
-    </div>
-</main>
+<div class="main">
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+
+    <section class="content">
+        <div class="dashboard-grid">
+            <div class="card" id="goRegister">
+                <h3>Register Student</h3>
+                <p>Add new student accounts</p>
+            </div>
+
+            <div class="card" id="goRequests">
+                <h3>Document Requests</h3>
+                <p>View and manage pending requests</p>
+            </div>
+
+            <div class="card" id="goAnalytics">
+                <h3>Analytics</h3>
+                <p>Overview of system activity</p>
+            </div>
+        </div>
+    </section>
+</div>
 
 <script src="/js/admin.js"></script>
+
 </body>
 </html>

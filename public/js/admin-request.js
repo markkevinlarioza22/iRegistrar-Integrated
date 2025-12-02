@@ -1,45 +1,71 @@
 const token = localStorage.getItem("token");
 
-// Fetch all requests
+// FETCH ALL REQUESTS FOR ADMIN
 async function loadRequests() {
-    const response = await fetch('/api/requests/all', {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    try {
+        const response = await fetch('/api/requests/all', {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-    const data = await response.json();
-    const tbody = document.getElementById("requestsBody");
-    tbody.innerHTML = "";
+        const data = await response.json();
+        const tbody = document.getElementById("requestsBody");
+        tbody.innerHTML = "";
 
-    data.forEach(req => {
-        const tr = document.createElement("tr");
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6">No requests found.</td></tr>`;
+            return;
+        }
 
-        tr.innerHTML = `
-            <td>${req.studentName}</td>
-            <td>${req.documentType}</td>
-            <td>${new Date(req.createdAt).toLocaleDateString()}</td>
-            <td>${req.status}</td>
-            <td>
-                <button class="action approve" onclick="updateStatus('${req._id}', 'Approved')">Approve</button>
-                <button class="action deny" onclick="updateStatus('${req._id}', 'Denied')">Deny</button>
-            </td>
-        `;
+        data.forEach(req => {
+            const tr = document.createElement("tr");
 
-        tbody.appendChild(tr);
-    });
+            const statusClass = req.status.replace(" ", "");
+
+            tr.innerHTML = `
+                <td>${req.studentName || "Unknown"}</td>
+                <td>${req.documentType}</td>
+                <td>${req.purpose || "—"}</td>
+                <td>${new Date(req.createdAt).toLocaleDateString()}</td>
+                <td><span class="status ${statusClass}">${req.status}</span></td>
+                <td class="actions">
+                    <button class="approve-btn" onclick="updateStatus('${req._id}', 'Approved')">Approve</button>
+                    <button class="processing-btn" onclick="updateStatus('${req._id}', 'Processing')">Processing</button>
+                    <button class="reject-btn" onclick="updateStatus('${req._id}', 'Rejected')">Reject</button>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error("Error loading requests:", error);
+    }
 }
 
-// Update request status
+
+// UPDATE STATUS
 async function updateStatus(id, status) {
-    await fetch(`/api/requests/status/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ status })
-    });
+    try {
+        const response = await fetch(`/api/requests/status/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
+        });
 
-    loadRequests();
+        const result = await response.json();
+        console.log("Status updated:", result);
+
+        loadRequests(); // Refresh table
+
+    } catch (error) {
+        console.error("Error updating status:", error);
+    }
 }
 
+// INITIAL LOAD
 loadRequests();
