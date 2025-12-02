@@ -26,8 +26,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
-// Catch-all route for frontend HTML
-app.get('*', (req, res) => {
+// Catch-all for SPA or static pages
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
