@@ -1,82 +1,78 @@
 // public/js/app.js
-// ================================
-// Student Dashboard Script
-// ================================
+(async () => {
+  const token = localStorage.getItem('token');
 
-// Ensure config loaded
-const API_URL = API_BASE_URL;
-
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
-
-// Redirect if not logged in
-if (!token) window.location.href = "/login.html";
-
-// Fetch wrapper
-function authFetch(url, options = {}) {
-  return fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {})
-    }
-  });
-}
-
-// Load student info
-function loadStudentInfo() {
-  const name = localStorage.getItem("name") || "Student";
-  document.getElementById("welcomeMsg").textContent = `Welcome, ${name}!`;
-  document.getElementById("roleInfo").textContent = `Role: ${role}`;
-}
-
-// Load student requests
-async function loadStudentRequests() {
-  const tbody = document.querySelector("#requestTable tbody");
-  if (!tbody) return;
-
-  tbody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
-
-  try {
-    const res = await authFetch(`${API_URL}/requests/my`);
-    const data = await res.json();
-
-    if (!res.ok) {
-      tbody.innerHTML = `<tr><td colspan="4">${data.message || "Error"}</td></tr>`;
-      return;
-    }
-
-    if (!data.length) {
-      tbody.innerHTML = `<tr><td colspan="4">No requests yet.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = "";
-    data.forEach(req => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${req.documentType}</td>
-        <td>${req.purpose}</td>
-        <td><span class="status ${req.status}">${req.status}</span></td>
-        <td>${new Date(req.createdAt).toLocaleDateString()}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-  } catch (err) {
-    console.error("Error loading student requests", err);
-    tbody.innerHTML = `<tr><td colspan="4">Server error.</td></tr>`;
+  // If no token, redirect to login
+  if (!token) {
+    window.location.href = '/login.html';
+    return;
   }
-}
 
-// Logout
-document.getElementById("logoutBtn")?.addEventListener("click", () => {
-  localStorage.clear();
-  window.location.href = "/login.html";
-});
+  // Elements
+  const welcomeMsg = document.getElementById('welcomeMsg');
+  const roleInfo = document.getElementById('roleInfo');
+  const requestTableBody = document.querySelector('#requestTable tbody');
+  const logoutBtn = document.getElementById('logoutBtn');
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadStudentInfo();
-  loadStudentRequests();
-});
+  // Basic user info retrieval (optional). If you have /api/users/me, use it.
+  async function fetchMe() {
+    try {
+      const res = await fetch('/api/users/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (welcomeMsg) welcomeMsg.textContent = `Welcome, ${data.name || data.userId || 'User'}!`;
+      if (roleInfo) roleInfo.textContent = `Role: ${data.role || 'student'}`;
+    } catch (err) {
+      console.error('Error fetching user info', err);
+    }
+  }
+
+  // Load student's requests (same as request-doc list)
+  async function loadRequests() {
+    try {
+      const res = await fetch('/api/requests', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        requestTableBody.innerHTML = '<tr><td colspan="4">Failed to load requests.</td></tr>';
+        return;
+      }
+      const data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        requestTableBody.innerHTML = '<tr><td colspan="4">No requests found.</td></tr>';
+        return;
+      }
+
+      requestTableBody.innerHTML = '';
+      data.forEach(r => {
+        const tr = document.createElement('tr');
+        const statusClass = (r.status || 'Pending').replace(/\s+/g, '');
+        tr.innerHTML = `
+          <td>${r.documentType || '—'}</td>
+          <td>${r.purpose || '—'}</td>
+          <td class="status ${statusClass}">${r.status || 'Pending'}</td>
+          <td>${new Date(r.createdAt).toLocaleString()}</td>
+        `;
+        requestTableBody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error('Error loading requests:', err);
+      requestTableBody.innerHTML = '<tr><td colspan="4">Error loading requests.</td></tr>';
+    }
+  }
+
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    });
+  }
+
+  // Initialize
+  await fetchMe();
+  await loadRequests();
+})();

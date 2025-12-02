@@ -1,98 +1,111 @@
 // public/js/request-doc.js
-// ================================
-// Student document request page script
-// ================================
+(async () => {
+  const token = localStorage.getItem('token');
 
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
-const API_URL = API_BASE_URL;
-
-// Redirect to login if not logged in
-if (!token) {
-  window.location.href = "/login.html";
-}
-
-// Helper to include auth header
-function authFetch(url, options = {}) {
-  return fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {})
-    }
-  });
-}
-
-// Load student's own requests
-async function loadMyRequests() {
-  const tbody = document.querySelector("#myRequestsTable tbody");
-  if (!tbody) return;
-
-  tbody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
-
-  try {
-    const res = await authFetch(`${API_URL}/requests/my`);
-    const data = await res.json();
-
-    tbody.innerHTML = "";
-
-    if (!res.ok || !data.length) {
-      tbody.innerHTML = `<tr><td colspan="4">${data.message || "No requests found."}</td></tr>`;
-      return;
-    }
-
-    data.forEach(req => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${req.documentType}</td>
-        <td>${req.purpose}</td>
-        <td><strong class="status ${req.status}">${req.status}</strong></td>
-        <td>${new Date(req.createdAt).toLocaleDateString()}</td>
-      `;
-      tbody.appendChild(row);
-    });
-
-  } catch (err) {
-    console.error("Error loading requests:", err);
-    tbody.innerHTML = `<tr><td colspan="4">Server error loading requests.</td></tr>`;
-  }
-}
-
-// Submit new document request
-document.getElementById("requestForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const documentType = (document.getElementById("documentType")?.value || "").trim();
-  const purpose = (document.getElementById("purpose")?.value || "").trim();
-
-  if (!documentType || !purpose) {
-    alert("Please complete all fields.");
+  // If not logged in, redirect to login
+  if (!token) {
+    alert('Please login first.');
+    window.location.href = '/login.html';
     return;
   }
 
-  try {
-    const res = await authFetch(`${API_URL}/requests`, {
-      method: "POST",
-      body: JSON.stringify({ documentType, purpose })
-    });
+  const form = document.getElementById('requestForm');
+  const tableBody = document.querySelector('#myRequestsTable tbody');
 
-    const data = await res.json();
+  // Helper to show simple messages (could be upgraded to UI alerts)
+  function showMessage(msg) {
+    alert(msg);
+  }
 
-    if (!res.ok) {
-      alert(data.message || "Failed to submit request.");
+  // Load student's own requests and render table
+  async function loadMyRequests() {
+    try {
+      const res = await fetch('/api/requests', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        tableBody.innerHTML = '<tr><td colspan="4">Failed to load requests.</td></tr>';
+        return;
+      }
+      const data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4">No requests found.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = '';
+      data.forEach(r => {
+        const tr = document.createElement('tr');
+
+        // Map status to class names used by your CSS in dashboard-docs.html
+        const statusClass = (r.status || 'Pending').replace(/\s+/g, '');
+
+        tr.innerHTML = `
+          <td>${r.documentType || '—'}</td>
+          <td>${r.purpose || '—'}</td>
+          <td class="status ${statusClass}">${r.status || 'Pending'}</td>
+          <td>${new Date(r.createdAt).toLocaleString()}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error('Error loading student requests:', err);
+      tableBody.innerHTML = '<tr><td colspan="4">Error loading requests.</td></tr>';
+    }
+  }
+
+  // Submit handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const documentType = document.getElementById('documentType').value;
+    const purpose = document.getElementById('purpose').value.trim();
+
+    if (!documentType) {
+      showMessage('Please select a document type.');
+      return;
+    }
+    if (!purpose) {
+      showMessage('Please enter a purpose for the request.');
       return;
     }
 
-    alert("Request submitted successfully!");
-    document.getElementById("requestForm").reset();
-    await loadMyRequests(); // refresh table
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ documentType, purpose })
+      });
 
-  } catch (err) {
-    console.error("Error submitting request:", err);
-    alert("Server error. Please try again.");
+      if (!res.ok) {
+        const body = await res.json().catch(()=>({message:'Request failed'}));
+        showMessage('Failed to submit request: ' + (body.message || res.statusText));
+        return;
+      }
+
+      const created = await res.json();
+      showMessage('Request submitted successfully.');
+      form.reset();
+      await loadMyRequests();
+
+    } catch (err) {
+      console.error('Submit error:', err);
+      showMessage('An error occurred while submitting the request.');
+    }
+  });
+
+  // Initial load
+  await loadMyRequests();
+
+  // Logout button on this page if exists
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    });
   }
-});
-
-// Initial load
-document.addEventListener("DOMContentLoaded", loadMyRequests);
+})();
