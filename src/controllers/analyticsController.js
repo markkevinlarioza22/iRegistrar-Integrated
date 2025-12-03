@@ -1,14 +1,14 @@
+const User = require('../models/userModel');
 const Request = require('../models/requestModel');
 
 exports.getRequestStats = async (req, res) => {
     try {
+        const totalStudents = await User.countDocuments({ role: "student" });
         const totalRequests = await Request.countDocuments();
-        const approved = await Request.countDocuments({ status: 'approved' });
-        const pending = await Request.countDocuments({ status: 'pending' });
-        const rejected = await Request.countDocuments({ status: 'rejected' });
+        const pending = await Request.countDocuments({ status: "Pending" });
 
-        res.json({ totalRequests, approved, pending, rejected });
+        res.json({ totalStudents, totalRequests, pending });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ error: err.message });
     }
 };

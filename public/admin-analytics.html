@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header>
+    <h1>System Analytics</h1>
+    <button onclick="window.location.href='admin.html'">Back</button>
+</header>
+
+<div class="container">
+    <h2>Overview</h2>
+
+    <ul>
+        <li>Total Registered Students: <span id="countStudents">Loading...</span></li>
+        <li>Total Requests Submitted: <span id="countRequests">Loading...</span></li>
+        <li>Pending Requests: <span id="countPending">Loading...</span></li>
+    </ul>
+</div>
+
+<script src="/js/config.js"></script>
+<script src="/js/admin-analytics.js"></script>
+
+</body>
+</html>

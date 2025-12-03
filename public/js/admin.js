@@ -5,12 +5,21 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
 });
 
 // Navigation helpers
-document.getElementById("btnAddStudent")?.addEventListener("click", () => {
-    window.location.href = "/register.html";
-});
-document.getElementById("btnViewRequests")?.addEventListener("click", () => {
-    window.location.href = "/admin-requests.html";
-});
-document.getElementById("btnAnalytics")?.addEventListener("click", () => {
-    window.location.href = "/admin-analytics.html";
-});
+document.getElementById("btnAddStudent").onclick = () =>
+    window.location.href = "admin-register.html";
+
+document.getElementById("goRegister").onclick = () =>
+    window.location.href = "admin-register.html";
+
+document.getElementById("btnViewRequests").onclick = () =>
+    window.location.href = "admin-request.html";
+
+document.getElementById("goRequests").onclick = () =>
+    window.location.href = "admin-request.html";
+
+document.getElementById("btnAnalytics").onclick = () =>
+    window.location.href = "admin-analytics.html";
+
+document.getElementById("goAnalytics").onclick = () =>
+    window.location.href = "admin-analytics.html";
+

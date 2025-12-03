@@ -27,8 +27,8 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Catch-all for SPA or static pages
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
+const analyticsRoutes = require('./routes/analyticsRoutes');
+app.use('/api/analytics', analyticsRoutes);
+
 
 module.exports = app;
