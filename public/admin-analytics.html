@@ -1,26 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics</title>
-    <link rel="stylesheet" href="/css/admin.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/responsive.css">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+  }
+  header {
+    background: #003b8b;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+  }
+  header button {
+    background: #e74c3c;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  header button:hover {
+    background: #c0392b;
+  }
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h2 {
+    color: #003b8b;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  ul li {
+    background: #f0f2f5;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+  }
+  span {
+    color: #003b8b;
+  }
+</style>
 </head>
 <body>
 
 <header>
-    <h1>System Analytics</h1>
-    <button onclick="window.location.href='admin.html'">Back</button>
+  <h1>System Analytics</h1>
+  <button onclick="window.location.href='/admin.html'">Back</button>
 </header>
 
 <div class="container">
-    <h2>Overview</h2>
-
-    <ul>
-        <li>Total Registered Students: <span id="countStudents">Loading...</span></li>
-        <li>Total Requests Submitted: <span id="countRequests">Loading...</span></li>
-        <li>Pending Requests: <span id="countPending">Loading...</span></li>
-    </ul>
+  <h2>Overview</h2>
+  <ul>
+    <li>Total Registered Students: <span id="countStudents">Loading...</span></li>
+    <li>Total Requests Submitted: <span id="countRequests">Loading...</span></li>
+    <li>Pending Requests: <span id="countPending">Loading...</span></li>
+  </ul>
 </div>
 
 <script src="/js/config.js"></script>

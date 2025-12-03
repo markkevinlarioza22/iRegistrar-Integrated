@@ -1,45 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Student</title>
-    <link rel="stylesheet" href="/css/admin.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Student</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/responsive.css">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+  }
+  header {
+    background: #003b8b;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+  }
+  header button {
+    background: #e74c3c;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  header button:hover {
+    background: #c0392b;
+  }
+  main {
+    max-width: 500px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #003b8b;
+    margin-bottom: 25px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+  input:focus {
+    border-color: #003b8b;
+    outline: none;
+  }
+  button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: #003b8b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button[type="submit"]:hover {
+    background: #0050c8;
+  }
+  p {
+    text-align: center;
+    margin-top: 15px;
+    color: #555;
+  }
+  p a {
+    color: #003b8b;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  p a:hover {
+    text-decoration: underline;
+  }
+</style>
 </head>
-
 <body>
 
-<div class="container" style="max-width: 450px; margin: 40px auto;">
-    <h2>Register New Student</h2>
+<header>
+  <h1>Register Student</h1>
+  <button onclick="window.location.href='/admin.html'">Back</button>
+</header>
 
-    <form id="adminRegisterForm">
+<main>
+  <form id="registerForm">
+    <h1>Create Student Account</h1>
 
-        <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="name" required>
-        </div>
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Enter full name" required>
+    </div>
 
-        <div class="form-group">
-            <label>Student Email</label>
-            <input type="email" id="email" required>
-        </div>
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="Enter email" required>
+    </div>
 
-        <div class="form-group">
-            <label>Default Password</label>
-            <input type="password" id="password" value="123456" required>
-        </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Create password" required>
+    </div>
 
-        <button type="submit" class="btn">Register Student</button>
-
-        <p>
-            <a href="admin.html">← Back to Dashboard</a>
-        </p>
-
-    </form>
-</div>
+    <button type="submit">Register Student</button>
+  </form>
+</main>
 
 <script src="/js/config.js"></script>
-<script src="/js/admin-register.js"></script>
+<script src="/js/register.js"></script>
 
 </body>
 </html>

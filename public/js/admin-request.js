@@ -1,4 +1,8 @@
 const token = localStorage.getItem("token");
+if (!token) {
+    alert("Unauthorized access.");
+    window.location.href = "/login.html";
+}
 
 async function loadRequests() {
     try {
@@ -62,7 +66,8 @@ async function updateStatus(id, status) {
         }
 
         await res.json();
-        loadRequests();
+        loadRequests(); // refresh after update
+        alert("Status updated successfully!");
     } catch (err) {
         console.error("Error updating status:", err);
     }

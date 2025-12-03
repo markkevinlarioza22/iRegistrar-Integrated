@@ -1,50 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/admin.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/responsive.css">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #f0f2f5;
+  }
+  .sidebar {
+    position: fixed;
+    width: 220px;
+    height: 100vh;
+    background: #003b8b;
+    color: white;
+    padding: 20px;
+  }
+  .sidebar h2 {
+    margin-bottom: 40px;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  .sidebar ul li {
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 6px;
+    transition: 0.2s;
+  }
+  .sidebar ul li:hover {
+    background: #0050c8;
+  }
+  .sidebar ul li.logout {
+    margin-top: 50px;
+    background: #e74c3c;
+  }
+  .sidebar ul li.logout:hover {
+    background: #c0392b;
+  }
+  .main {
+    margin-left: 240px;
+    padding: 40px;
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+  }
+  .card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+  .card h3 {
+    margin-bottom: 10px;
+    color: #003b8b;
+  }
+  .card p {
+    color: #555;
+  }
+</style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>iRegistrar</h2>
-    <ul>
-        <li id="navDashboard">Dashboard</li>
-        <li id="btnAddStudent">Register Student</li>
-        <li id="btnViewRequests">Document Requests</li>
-        <li id="btnAnalytics">Analytics</li>
-        <li id="logoutBtn" class="logout">Logout</li>
-    </ul>
+  <h2>iRegistrar</h2>
+  <ul>
+    <li id="navDashboard">Dashboard</li>
+    <li id="btnAddStudent">Register Student</li>
+    <li id="btnViewRequests">Document Requests</li>
+    <li id="btnAnalytics">Analytics</li>
+    <li id="logoutBtn" class="logout">Logout</li>
+  </ul>
 </div>
 
 <div class="main">
-    <header>
-        <h1>Admin Dashboard</h1>
-    </header>
-
-    <section class="content">
-        <div class="dashboard-grid">
-            <div class="card" id="goRegister">
-                <h3>Register Student</h3>
-                <p>Add new student accounts</p>
-            </div>
-
-            <div class="card" id="goRequests">
-                <h3>Document Requests</h3>
-                <p>View and manage pending requests</p>
-            </div>
-
-            <div class="card" id="goAnalytics">
-                <h3>Analytics</h3>
-                <p>Overview of system activity</p>
-            </div>
-        </div>
-    </section>
+  <h1>Admin Dashboard</h1>
+  <div class="dashboard-grid">
+    <div class="card" id="goRegister">
+      <h3>Register Student</h3>
+      <p>Add new student accounts</p>
+    </div>
+    <div class="card" id="goRequests">
+      <h3>Document Requests</h3>
+      <p>View and manage pending requests</p>
+    </div>
+    <div class="card" id="goAnalytics">
+      <h3>Analytics</h3>
+      <p>Overview of system activity</p>
+    </div>
+  </div>
 </div>
 
 <script src="/js/admin.js"></script>
-
 </body>
 </html>

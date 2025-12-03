@@ -1,0 +1,76 @@
+/* Responsive adjustments for mobile and tablet */
+@media (max-width: 1024px) {
+    body {
+        font-size: 14px;
+    }
+    header h1 {
+        font-size: 20px;
+    }
+    header button {
+        padding: 6px 14px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 20px;
+    }
+    main, .container {
+        margin: 20px;
+        padding: 20px;
+    }
+    h1, h2 {
+        font-size: 18px;
+    }
+    input, button[type="submit"] {
+        font-size: 14px;
+        padding: 10px;
+    }
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    thead tr {
+        display: none;
+    }
+    tbody tr {
+        margin-bottom: 15px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        flex: 1;
+    }
+    .actions button {
+        margin: 5px 5px 0 0;
+        width: 30%;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 16px;
+    }
+    input, button[type="submit"], header button {
+        font-size: 12px;
+        padding: 8px;
+    }
+    ul li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}

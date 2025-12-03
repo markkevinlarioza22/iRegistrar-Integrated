@@ -7,6 +7,7 @@ exports.createRequest = async (req, res) => {
         const request = new Request({
             studentId: req.user.id,
             documentType: req.body.documentType,
+            purpose: req.body.purpose || "—",
             status: "Pending"
         });
         await request.save();
@@ -24,21 +25,33 @@ exports.getUserRequests = async (req, res) => {
 
 // Admin gets all requests
 exports.getAllRequests = async (req, res) => {
-    const requests = await Request.find().populate("studentId", "name email");
-    const formatted = requests.map(r => ({
-        _id: r._id,
-        studentName: r.studentId.name,
-        documentType: r.documentType,
-        createdAt: r.createdAt,
-        status: r.status
-    }));
-    res.json(formatted);
+    try {
+        const requests = await Request.find().populate("studentId", "name email");
+        const formatted = requests.map(r => ({
+            _id: r._id,
+            studentName: r.studentId.name,
+            documentType: r.documentType,
+            purpose: r.purpose || "—",
+            createdAt: r.createdAt,
+            status: r.status
+        }));
+        res.json(formatted);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 // Admin updates status
 exports.updateRequestStatus = async (req, res) => {
-    await Request.findByIdAndUpdate(req.params.id, {
-        status: req.body.status
-    });
-    res.json({ message: "Updated" });
+    try {
+        const request = await Request.findById(req.params.id);
+        if (!request) return res.status(404).json({ message: "Request not found" });
+
+        request.status = req.body.status;
+        await request.save();
+
+        res.json({ message: "Updated", request });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
