@@ -1,87 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Analytics</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/responsive.css">
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    background: #f4f6f8;
-  }
-  header {
-    background: #003b8b;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-  }
-  header button {
-    background: #e74c3c;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  header button:hover {
-    background: #c0392b;
-  }
-  .container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  h2 {
-    color: #003b8b;
-    margin-bottom: 25px;
-    text-align: center;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  ul li {
-    background: #f0f2f5;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    justify-content: space-between;
-  }
-  span {
-    color: #003b8b;
-  }
-</style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>System Analytics - iRegistrar</title>
+<link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
+  <div class="layout">
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="false"><img src="./images/ascot-seal.png" alt="ASCOT logo" onerror="this.style.display='none'"></div>
+        <div class="brand-text">Aurora State College<br>of Technology</div>
+      </div>
 
-<header>
-  <h1>System Analytics</h1>
-  <button onclick="window.location.href='/admin.html'">Back</button>
-</header>
+      <div style="display:flex;justify-content:center;">
+        <div class="avatar">AD</div>
+      </div>
 
-<div class="container">
-  <h2>Overview</h2>
-  <ul>
-    <li>Total Registered Students: <span id="countStudents">Loading...</span></li>
-    <li>Total Requests Submitted: <span id="countRequests">Loading...</span></li>
-    <li>Pending Requests: <span id="countPending">Loading...</span></li>
-  </ul>
+      <nav class="nav" aria-label="Sidebar">
+        <a href="admin.html"><span class="icon">🏠</span> Dashboard</a>
+        <a href="admin-requests.html"><span class="icon">📋</span> Requests</a>
+        <a href="admin-register.html"><span class="icon">👥</span> Users</a>
+        <a href="admin-analytics.html" class="active"><span class="icon">📈</span> Analytics</a>
+      </nav>
+
+      <div class="spacer"></div>
+
+      <a href="#" data-logout class="btn" style="display:block;text-align:center">🚪 Logout</a>
+    </aside>
+
+    <div class="content">
+      <header class="header" role="banner">
+        <div class="left">
+          <h1>System Analytics</h1>
+          <p>Overview of users and requests</p>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:800">Welcome back, Admin</div>
+          <div style="font-size:12px;color:var(--muted)">Today · <span id="nowTime">—</span></div>
+        </div>
+      </header>
+
+      <main class="container" role="main">
+        <section class="stats-row" aria-label="Top metrics">
+          <div class="stat-card">
+            <div class="stat-left">
+              <div class="stat-label">Total Registered Students</div>
+              <div class="stat-value" id="countStudents">--</div>
+            </div>
+            <div class="stat-icon">🎓</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-left">
+              <div class="stat-label">Total Requests</div>
+              <div class="stat-value" id="countRequests">--</div>
+            </div>
+            <div class="stat-icon">📋</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-left">
+              <div class="stat-label">Pending Requests</div>
+              <div class="stat-value" id="countPending">--</div>
+            </div>
+            <div class="stat-icon">⏳</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-left">
+              <div class="stat-label">Completion Rate</div>
+              <div class="stat-value" id="countRate">--</div>
+            </div>
+            <div class="stat-icon">📈</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>System Analytics</h2>
+            <p>Overview of users and requests</p>
+          </div>
+          <div class="card-body">
+            <!-- Metrics: single-line flex row -->
+<div class="metrics-row" role="region" aria-label="Key metrics" style="margin-bottom:18px;">
+  <div class="metric card">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;color:var(--muted)">Total Registered Students</div>
+          <div id="countStudents" style="font-size:32px;font-weight:900;margin-top:6px">--</div>
+        </div>
+        <div class="metric-icon">🎓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric card">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;color:var(--muted)">Total Requests</div>
+          <div id="countRequests" style="font-size:32px;font-weight:900;margin-top:6px">--</div>
+        </div>
+        <div class="metric-icon">📋</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric card">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;color:var(--muted)">Pending Requests</div>
+          <div id="countPending" style="font-size:32px;font-weight:900;margin-top:6px">--</div>
+        </div>
+        <div class="metric-icon">⏳</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric card">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;color:var(--muted)">Completion Rate</div>
+          <div id="countRate" style="font-size:32px;font-weight:900;margin-top:6px">--</div>
+        </div>
+        <div class="metric-icon">📈</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script src="/js/config.js"></script>
-<script src="/js/admin-analytics.js"></script>
+            <!-- Charts area with explicit heights to prevent collapse -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:18px">
+              <div class="card" style="padding:12px;display:flex;flex-direction:column;height:320px">
+                <h3 style="margin:0 0 12px 0">Requests Over Time</h3>
+                <div style="flex:1;position:relative;min-height:250px">
+                  <canvas id="chartRequestsOverTime"></canvas>
+                </div>
+              </div>
 
+              <div style="display:grid;grid-auto-rows:auto;gap:18px">
+                <div class="card" style="padding:12px;display:flex;flex-direction:column;height:180px">
+                  <h4 style="margin:0 0 12px 0">Request Status</h4>
+                  <div style="flex:1;position:relative;min-height:120px">
+                    <canvas id="chartStatus"></canvas>
+                  </div>
+                </div>
+
+                <div class="card" style="padding:12px;display:flex;flex-direction:column;height:220px">
+                  <h4 style="margin:0 0 12px 0">Top Programs (by requests)</h4>
+                  <div style="flex:1;position:relative;min-height:160px">
+                    <canvas id="chartPrograms"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    function updateNow(){ document.getElementById('nowTime').textContent = new Date().toLocaleString(); }
+    setInterval(updateNow,60000); updateNow();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="js/admin-analytics.js"></script>
 </body>
 </html>

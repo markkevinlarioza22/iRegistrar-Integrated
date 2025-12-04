@@ -2,9 +2,9 @@
 
 :root {
   /* ASCOT Colors */
-  --primary: yellowgreen;
-  --primary-dark:green;
-  --primary-light: yellow;
+  --primary: #8b0000;
+  --primary-dark: #6b0000;
+  --primary-light: #a52a2a;
   --secondary: #d4af37;
   --accent: #0f62fe;
   

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Document Requests - iRegistrar</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" role="navigation">
+      <div class="logo"><img src="./images/ascot-seal.png" alt="ASCOT logo"></div>
+      <h3>Aurora State College<br>of Technology</h3>
+      <nav class="nav">
+        <a href="admin.html">📊 Dashboard</a>
+        <a href="admin-requests.html" class="active">📋 Requests</a>
+        <a href="admin-register.html">👥 Users</a>
+        <a href="admin-analytics.html">📈 Analytics</a>
+      </nav>
+      <div style="margin-top:auto">
+        <a href="#" data-logout class="btn" style="display:block;text-align:center">🚪 Logout</a>
+      </div>
+    </aside>
+
+    <div class="content">
+      <header class="header">
+        <div class="title">
+          <h1>Document Requests</h1>
+          <p>Manage and process student document requests</p>
+        </div>
+      </header>
+
+      <main class="container">
+        <section class="stats-grid">
+          <div class="stat-card"><div><div class="stat-label">Pending Requests</div><div class="stat-value" id="pendingCount">127</div></div><div>⏳</div></div>
+          <div class="stat-card"><div><div class="stat-label">Processed</div><div class="stat-value" id="processedCount">1,204</div></div><div>✓</div></div>
+          <div class="stat-card"><div><div class="stat-label">Active Users</div><div class="stat-value" id="usersCount">892</div></div><div>👥</div></div>
+          <div class="stat-card"><div><div class="stat-label">Completion Rate</div><div class="stat-value" id="rateCount">98%</div></div><div>📈</div></div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>All Requests</h2>
+            <div>
+              <select id="statusFilter" onchange="window.__common.safeLoadRequests({ status: this.value, doc: document.getElementById('docFilter').value })">
+                <option value="">All Status</option><option>Pending</option><option>Processing</option><option>Approved</option><option>Rejected</option>
+              </select>
+              <select id="docFilter" onchange="window.__common.safeLoadRequests({ status: document.getElementById('statusFilter').value, doc: this.value })">
+                <option value="">All Documents</option><option>Transcript</option><option>Certificate</option><option>Diploma</option><option>Form 137</option>
+              </select>
+              <a href="admin.html" class="btn" style="margin-left:12px">← Back</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <table aria-label="Document requests">
+              <thead><tr><th>Student</th><th>Document</th><th>Purpose</th><th>Requested</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="requestsBody"><tr><td colspan="6" style="text-align:center;color:var(--muted)">Loading requests...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/admin-request.js"></script>
+</body>
+</html>

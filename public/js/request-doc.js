@@ -1,88 +1,79 @@
-(async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('Please login first.');
-        window.location.href = '/login.html';
-        return;
+// Fixed: Document request form
+
+(function(){
+  if (!protectRoute('student')) return;
+
+  const form = document.getElementById('requestForm');
+  if (!form) return;
+
+  const docSelect = document.getElementById('documentType');
+  const purposeInput = document.getElementById('purpose');
+  const docErr = document.getElementById('docTypeError');
+  const purposeErr = document.getElementById('purposeError');
+
+  if (!docSelect || !purposeInput) return;
+
+  function clearErrors() {
+    if (docErr) docErr.classList.remove('active');
+    if (purposeErr) purposeErr.classList.remove('active');
+  }
+
+  window.resetForm = function() {
+    form.reset();
+    clearErrors();
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+    
+    let valid = true;
+
+    if (!docSelect.value) {
+      if (docErr) {
+        docErr.textContent = 'Please choose a document';
+        docErr.classList.add('active');
+      }
+      valid = false;
     }
 
-    const form = document.getElementById('requestForm');
-    const tableBody = document.querySelector('#myRequestsTable tbody');
-
-    function showMessage(msg) { alert(msg); }
-
-    async function loadMyRequests() {
-        try {
-            const res = await fetch(`${API_BASE_URL}/requests`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!res.ok) {
-                const text = await res.text();
-                console.error("Failed to load requests:", text);
-                tableBody.innerHTML = '<tr><td colspan="4">Failed to load requests.</td></tr>';
-                return;
-            }
-
-            const data = await res.json();
-            if (!Array.isArray(data) || !data.length) {
-                tableBody.innerHTML = '<tr><td colspan="4">No requests found.</td></tr>';
-                return;
-            }
-
-            tableBody.innerHTML = '';
-            data.forEach(r => {
-                const statusClass = (r.status || 'Pending').replace(/\s+/g, '');
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${r.documentType || '—'}</td>
-                    <td>${r.purpose || '—'}</td>
-                    <td class="status ${statusClass}">${r.status || 'Pending'}</td>
-                    <td>${new Date(r.createdAt).toLocaleString()}</td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        } catch (err) {
-            console.error('Error loading student requests:', err);
-            tableBody.innerHTML = '<tr><td colspan="4">Error loading requests.</td></tr>';
-        }
+    if (!purposeInput.value.trim()) {
+      if (purposeErr) {
+        purposeErr.textContent = 'Please enter the purpose';
+        purposeErr.classList.add('active');
+      }
+      valid = false;
     }
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const documentType = document.getElementById('documentType').value;
-        const purpose = document.getElementById('purpose').value.trim();
+    if (!valid) return;
 
-        if (!documentType) return showMessage('Please select a document type.');
-        if (!purpose) return showMessage('Please enter a purpose for the request.');
+    try {
+      const response = await fetch(`${API_BASE}/requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...session.getAuthHeader()
+        },
+        body: JSON.stringify({
+          documentType: docSelect.value,
+          purpose: purposeInput.value.trim()
+        })
+      });
 
-        try {
-            const res = await fetch(`${API_BASE_URL}/requests`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ documentType, purpose }),
-            });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to submit request');
+      }
 
-            if (!res.ok) {
-                const text = await res.text();
-                console.error('Submit request failed:', text);
-                return showMessage('Failed to submit request.');
-            }
-
-            await res.json();
-            showMessage('Request submitted successfully.');
-            form.reset();
-            await loadMyRequests();
-        } catch (err) {
-            console.error('Submit error:', err);
-            showMessage('An error occurred while submitting the request.');
-        }
-    });
-
-    await loadMyRequests();
-
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        window.location.href = '/login.html';
-    });
+      alert('Request submitted successfully!');
+      form.reset();
+      clearErrors();
+      setTimeout(() => {
+        window.location.href = '/dashboard-docs.html';
+      }, 500);
+    } catch (error) {
+      console.error('Request error:', error);
+      alert('Error: ' + error.message);
+    }
+  });
 })();

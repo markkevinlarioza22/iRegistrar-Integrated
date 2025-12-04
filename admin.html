@@ -9,10 +9,7 @@
 <body>
   <div class="layout">
     <aside class="sidebar" role="navigation" aria-label="Main navigation">
-      <div class="logo" aria-hidden="false">
-        <img src="./images/ascot-seal.png" alt="ASCOT logo"
-             onerror="this.style.display='none'; if(!this._fallback){ this._fallback=true; this.parentNode.insertAdjacentHTML('beforeend','<div class=&quot;logo-fallback&quot;>ASCOT</div>'); }">
-      </div>
+      <div class="logo"><img src="C:\Users\markk\iregistrar-integrated\src\images\logo.png" alt="ASCOT logo"></div>
       <h3>Aurora State College<br>of Technology</h3>
       <nav class="nav">
         <a href="admin.html" class="active">📊 Dashboard</a>
@@ -86,29 +83,5 @@
 
   <script src="js/common.js"></script>
   <script src="js/admin.js"></script>
-  <script>
-    // minimal required config - edit to match your backend and EmailJS keys
-    window.__API_BASE = ''; // e.g. 'https://your-api.example.com' or empty for same origin
-    window.__API_ENDPOINTS = {
-      requestsList: '/api/requests?status=pending',            // GET pending requests
-      requestAction: '/api/requests/{id}/action',             // POST { action: 'approve'|'reject'|'complete', reason }
-      analytics: '/api/analytics'                             // optional: combined analytics endpoint
-    };
-    // Optional: EmailJS (client-side) config OR provide server notify endpoint
-    window.__EMAILJS = {
-      userID: '',        // EmailJS user id (optional)
-      serviceID: '',     // EmailJS service id (optional)
-      templates: {       // template ids (optional)
-        submitted: '',
-        approved: '',
-        rejected: '',
-        completed: ''
-      }
-    };
-    // Optional: server-side notification endpoint (preferred)
-    // window.__API_ENDPOINTS.notify = '/api/notify';
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
-  <script src="js/admin-dashboard.js"></script>
 </body>
 </html>
